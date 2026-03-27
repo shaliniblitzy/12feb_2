@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Comprehensive JUnit 5 unit tests for the {@link AgeResult} model class.
@@ -288,6 +290,65 @@ class AgeResultTest {
             // Also verify toString() consistency
             assertEquals(result.toString(), result.toString(),
                     "toString() should return consistent value across multiple calls");
+        }
+    }
+
+    // =========================================================================
+    // Nested Test Class: equals() and hashCode() Contract Verification
+    // =========================================================================
+
+    @Nested
+    @DisplayName("equals() and hashCode() Contract Tests")
+    class EqualsAndHashCodeTests {
+
+        @Test
+        @DisplayName("Two AgeResult instances with the same values are equal and produce the same hashCode")
+        void testAgeResult_EqualObjects_AreEqualAndHaveSameHashCode() {
+            AgeResult result1 = new AgeResult(27, 6, 15);
+            AgeResult result2 = new AgeResult(27, 6, 15);
+
+            assertAll("Equal objects contract",
+                    () -> assertTrue(result1.equals(result1),
+                            "equals() should be reflexive"),
+                    () -> assertTrue(result1.equals(result2),
+                            "AgeResult instances with identical values should be equal"),
+                    () -> assertTrue(result2.equals(result1),
+                            "equals() should be symmetric"),
+                    () -> assertEquals(result1.hashCode(), result2.hashCode(),
+                            "Equal AgeResult instances must produce the same hashCode")
+            );
+        }
+
+        @Test
+        @DisplayName("Two AgeResult instances with different values are not equal")
+        void testAgeResult_DifferentObjects_AreNotEqual() {
+            AgeResult baseline = new AgeResult(27, 6, 15);
+
+            assertAll("Unequal objects",
+                    () -> assertFalse(baseline.equals(new AgeResult(28, 6, 15)),
+                            "Different years should produce inequality"),
+                    () -> assertFalse(baseline.equals(new AgeResult(27, 7, 15)),
+                            "Different months should produce inequality"),
+                    () -> assertFalse(baseline.equals(new AgeResult(27, 6, 16)),
+                            "Different days should produce inequality"),
+                    () -> assertFalse(baseline.equals(new AgeResult(0, 0, 0)),
+                            "Completely different values should produce inequality")
+            );
+        }
+
+        @Test
+        @DisplayName("equals(null) returns false and equals(different type) returns false")
+        void testAgeResult_EqualsNullAndDifferentType_ReturnsFalse() {
+            AgeResult result = new AgeResult(27, 6, 15);
+
+            assertAll("Null and different type equality checks",
+                    () -> assertFalse(result.equals(null),
+                            "equals(null) should return false"),
+                    () -> assertFalse(result.equals("a string"),
+                            "equals(String) should return false"),
+                    () -> assertFalse(result.equals(Integer.valueOf(27)),
+                            "equals(Integer) should return false")
+            );
         }
     }
 }
