@@ -80,9 +80,10 @@ class AgeCalculatorValidationTest {
         @DisplayName("Tomorrow's date (16/03/2025) throws IllegalArgumentException with 'future' in message")
         void testValidateDate_FutureDate_ThrowsIllegalArgumentException() {
             // 16/03/2025 is one day after the reference date 2025-03-15
+            // Tests validateDate() directly (distinct from calculateAge() tested at L103)
             IllegalArgumentException ex = assertThrows(
                     IllegalArgumentException.class,
-                    () -> calculator.calculateAge("16/03/2025"));
+                    () -> calculator.validateDate("16/03/2025"));
 
             // Verify the exception message mentions "future" for user clarity
             assertTrue(ex.getMessage().contains("future"),
